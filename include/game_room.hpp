@@ -26,7 +26,7 @@
 ///
 ///  game::Room is a variant of lgp::Object that represents a room.
 ///
-/// File last updated 15:20 UTC on 8 Aug 2010
+/// File last updated 13:30 UTC on 14 Aug 2010
 
 #ifndef _GAME_ROOM_HPP_
 #define	_GAME_ROOM_HPP_
@@ -34,13 +34,38 @@
 #include <lgp_object.hpp>
 
 namespace game {
+    using lgp::ObjectID;
+
+    enum Direction {NORTH=1, SOUTH, EAST, WEST, UP, DOWN};
 
     class Room : public lgp::Object
     {
     public:
+        Room();
+        ~Room();
 
+        Room(std::string name);
+
+        //
+        bool isExit(Direction direction);                  //Checks to see if a door exists for a given direction
+        ObjectID getExit(Direction direction);             //Returns the room that an exit goes too.
+
+        void setExit(Direction direction,ObjectID room);   //Sets the room that an exit goes too.  #-1 means no exit.
+
+        std::string getDescription(void);
+        void setDescription(std::string description);
+        
     protected:
+        //These values hold the Object ID of the rooms that the doors lead too.
+        //If there is not a door in a given direction, then the value is #-1.
+        ObjectID northDoorM;
+        ObjectID southDoorM;
+        ObjectID eastDoorM;
+        ObjectID westDoorM;
+        ObjectID upDoorM;
+        ObjectID downDoorM;
 
+        std::string descriptionM;
     };
 
 

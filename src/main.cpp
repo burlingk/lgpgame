@@ -28,7 +28,7 @@
 /// is a project to put libgamepieces to work on something more concrete than
 /// creating and destroying "trolls."
 ///
-/// File last updated 15:20 UTC on 8 Aug 2010
+/// File last updated 13:30 UTC on 14 Aug 2010
 
 
 
@@ -44,24 +44,14 @@ int main(int argc, char** argv) {
 
     game::World theWorld;
 
-    cout << "The Generator List at the start: " << endl << theWorld.listGenerators() << endl;
-
-    //registerGenerator<lgp::GenCreature>(theWorld, "creature");
-    //registerGenerator<game::GenRoom>(theWorld, "room");
-
     registerGenerators(theWorld);
 
-    cout  << "The list now: " << endl << theWorld.listGenerators() << endl;
+    lgp::ObjectID player = theWorld.generateObject("creature", "player");
+
+    cout << "The Player has Object ID #" << player << "." << endl;
 
 
-    cout << "Now I will try to create a creature named Bob." << endl;
-
-    theWorld.generateObject("creature", "Bob");
-
-    cout << "Bob should now be Object #1, since we have only created one object besides the world." << endl;
-
-    cout << "#1 says its name is: " << theWorld.getObjectById(1)->getName() << endl << endl;
-
+    
 
 
 

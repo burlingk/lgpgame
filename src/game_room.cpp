@@ -26,11 +26,125 @@
 ///
 ///  game::Room is a variant of lgp::Object that represents a room.
 ///
-/// File last updated 15:20 UTC on 8 Aug 2010
+/// File last updated 13:30 UTC on 14 Aug 2010
 
+#include <game_room.hpp>
 
 
 namespace game {
 
+    Room::Room()
+    {
+        northDoorM = -1;
+        southDoorM = -1;
+        eastDoorM  = -1;
+        westDoorM  = -1;
+        upDoorM    = -1;
+        downDoorM  = -1;
+    }
+    Room::~Room() {}
+
+    Room::Room(std::string name)
+    {
+        nameM      = name;
+
+        northDoorM = -1;
+        southDoorM = -1;
+        eastDoorM  = -1;
+        westDoorM  = -1;
+        upDoorM    = -1;
+        downDoorM  = -1;
+    }
+
+
+
+    bool Room::isExit(Direction direction)
+    {
+        ObjectID door;
+        switch (direction)
+        {
+            case NORTH:
+                door = northDoorM;
+                break;
+            case SOUTH:
+                door = southDoorM;
+                break;
+            case EAST:
+                door = eastDoorM;
+                break;
+            case WEST:
+                door = westDoorM;
+                break;
+            case UP:
+                door = upDoorM;
+                break;
+            case DOWN:
+                door = downDoorM;
+                break;
+            default:
+                door = -1;
+                break;
+        }//end switch (direction)
+
+        return(door != -1);
+    } //end isExit();
+
+    ObjectID Room::getExit(Direction direction)
+    {
+        switch(direction)
+        {
+            case NORTH:
+                return northDoorM;
+            case SOUTH:
+                return southDoorM;
+            case EAST:
+                return eastDoorM;
+            case WEST:
+                return westDoorM;
+            case UP:
+                return upDoorM;
+            case DOWN:
+                return downDoorM;
+            default:
+                return -2;
+        }//end switch (direction)
+    } //end getExit;
+
+    
+    void Room::setExit(Direction direction,ObjectID room)
+    {
+        switch(direction)
+        {
+            case NORTH:
+                northDoorM = room;
+                break;
+            case SOUTH:
+                southDoorM = room;
+                break;
+            case EAST:
+                eastDoorM = room;
+                break;
+            case WEST:
+                westDoorM = room;
+                break;
+            case UP:
+                upDoorM = room;
+                break;
+            case DOWN:
+                downDoorM = room;
+                break;
+        } //end switfch (direction)
+    }//end setExit()
+
+
+    void Room::setDescription(std::string description)
+    {
+        descriptionM = description;
+    }
+
+    std::string Room::getDescription(void)
+    {
+        return descriptionM;
+    }
 
 }// end namespace game
