@@ -34,6 +34,7 @@
 
 //lgpGame includes
 #include <lgpgame.hpp>
+#include <game_maze.hpp>
 
 
 
@@ -42,19 +43,28 @@ int main(int argc, char** argv) {
     using std::cout;
     using std::endl;
 
+    lgp::seed();
+
+    cout << "Creating the World." << endl;
     game::World theWorld;
 
+    cout << "Registering Generators." << endl;
     registerGenerators(theWorld);
 
+    cout << theWorld.listGenerators() << endl;
+
+    cout << "Creating the Player Object." << endl;
     lgp::ObjectID player = theWorld.generateObject("creature", "player");
 
-    cout << "The Player has Object ID #" << player << "." << endl;
+    cout << "Creating the Maze Object." << endl;
+    game::Maze theMaze(&theWorld);
+
+    cout << "Populating the Maze with rooms." << endl;
+    theMaze.generateMaze();
 
 
-    
 
-
-
+    cout << "Exiting the program." << endl;
 }
 
 

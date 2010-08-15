@@ -36,7 +36,7 @@
 namespace game {
     using lgp::ObjectID;
 
-    enum Direction {NORTH=1, SOUTH, EAST, WEST, UP, DOWN};
+    enum Direction { NODIRECTION=-1,NORTH=1, SOUTH, EAST, WEST, UP, DOWN };
 
     class Room : public lgp::Object
     {

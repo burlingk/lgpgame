@@ -19,7 +19,7 @@ namespace game {
 
     }
 
-    lgp::Object * generateObject(std::string name)
+    lgp::Object * GenRoom::generateObject(std::string name)
     {
         Room * newRoom = new Room;
         newRoom->setName(name);

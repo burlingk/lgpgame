@@ -11,7 +11,7 @@
 
 namespace game {
 
-    class GenRoom
+    class GenRoom : public lgp::IGenerator
     {
     public:
         GenRoom();
