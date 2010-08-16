@@ -332,14 +332,24 @@ namespace game {
         } //end SOUTH
 
 
+        //
+        // It is best to handle EAST, WEST, UP, and DOWN on a character by
+        // character basis, because they potentially interfear with each other.
+
         if(room.isExit(EAST))
         {
-            workRoomM[6]  = "---                          ---";
-            workRoomM[7]  = "                                ";
-            workRoomM[8]  = "                                ";
-            workRoomM[9]  = "                                ";
-            workRoomM[10] = "                                ";
-            workRoomM[11] = "---                          ---";
+            workRoomM[6][29]  = '-';
+            workRoomM[6][30]  = '-';
+            workRoomM[6][31]  = '-';
+            
+            workRoomM[7][30]  = ' ';
+            workRoomM[8][30]  = ' ';
+            workRoomM[9][30]  = ' ';
+            workRoomM[10][30] = ' ';
+            
+            workRoomM[11][29]  = '-';
+            workRoomM[11][30]  = '-';
+            workRoomM[11][31]  = '-';
             
         }//end EAST
 
