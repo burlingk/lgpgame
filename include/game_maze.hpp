@@ -53,6 +53,11 @@ namespace game {
 
         ObjectID getRoom(int x, int y, int z);
         void setRoom(int x, int y, int z, ObjectID room);
+
+        void displayRoom(Room &room);
+        std::string exits(Room &room);
+
+        
         
     protected:
         ObjectID originRoomM;               //The Object ID of the room at location 0,0,0
@@ -69,6 +74,10 @@ namespace game {
         Direction reverseDirection(Direction direction);
         Coordinate newLocation(Room &room, Direction direction);
 
+        void blankRoom(void);
+        void prepareRoom(Room &room);                 //Prepare the room for display.
+
+        std::string workRoomM[18];
 
 
 

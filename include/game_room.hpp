@@ -66,6 +66,7 @@ namespace game {
         ObjectID downDoorM;
 
         std::string descriptionM;
+
     };
 
 

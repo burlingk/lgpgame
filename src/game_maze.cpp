@@ -34,6 +34,7 @@
 #include <lgp_queue.hpp>
 #include <lgp_stack.hpp>
 #include <lgp_random.hpp>
+#include <sstream>
 
 #include <iostream>
 
@@ -133,7 +134,7 @@ namespace game {
         {
             Direction direction = candidates.pop();
             lgp::Coordinate testCoords = newLocation(room, direction);
-            if(testCoords.x > 10 || testCoords.x < 0 || testCoords.y < 0 || testCoords.y > 10 || testCoords.z > 10 || testCoords.z < 0)
+            if(testCoords.x > 10 || testCoords.x < 0 || testCoords.y > 10 || testCoords.y < 0 || testCoords.z > 10 || testCoords.z < 0)
             {
                 //Discard value.  Out of range.
             }
@@ -267,8 +268,6 @@ namespace game {
                 roomTemp = worldM->getObjectById(newRoomID);
                 newRoom = dynamic_cast<Room*>(roomTemp);
 
-                std::cout << " #" << newRoomID << " ";
-
                 newRoom->setExit(reverseDirection(newDirection), currentRoom->getId());   //Create the returning door.
                 newRoom->setLocation(newLocation(*currentRoom, newDirection));            //Set the location of the new room.
                 Coordinate newRoomLocation = newRoom->getLocation();
@@ -292,6 +291,154 @@ namespace game {
     }//end generateMaze()
 
 
+    void Maze::blankRoom(void)
+    {
+        workRoomM[0]  =    "                                ";
+        workRoomM[1]  =    " ############################## ";
+        workRoomM[2]  =    " #                            # ";
+        workRoomM[3]  =    " #                            # ";
+        workRoomM[4]  =    " #                            # ";
+        workRoomM[5]  =    " #                            # ";
+        workRoomM[6]  =    " #                            # ";
+        workRoomM[7]  =    " #                            # ";
+        workRoomM[8]  =    " #                            # ";
+        workRoomM[9]  =    " #                            # ";
+        workRoomM[10] =    " #                            # ";
+        workRoomM[11] =    " #                            # ";
+        workRoomM[12] =    " #                            # ";
+        workRoomM[13] =    " #                            # ";
+        workRoomM[14] =    " #                            # ";
+        workRoomM[15] =    " #                            # ";
+        workRoomM[16] =    " ############################## ";
+        workRoomM[17] =    "                                ";
+    } //end blankRoom()
+
+    void Maze::prepareRoom(Room &room)
+    {
+        blankRoom();
+        if(room.isExit(NORTH))
+        {
+            workRoomM[0] = "           |        |           ";
+            workRoomM[1] = " ##########|        |########## ";
+            workRoomM[2] = " #         |        |         # ";
+        } //end NORTH
+
+
+        if(room.isExit(SOUTH))
+        {
+            workRoomM[15] = " #         |        |         # ";
+            workRoomM[16] = " ##########|        |########## ";
+            workRoomM[17] = "           |        |           ";
+        } //end SOUTH
+
+
+        if(room.isExit(EAST))
+        {
+            workRoomM[6]  = "---                          ---";
+            workRoomM[7]  = "                                ";
+            workRoomM[8]  = "                                ";
+            workRoomM[9]  = "                                ";
+            workRoomM[10] = "                                ";
+            workRoomM[11] = "---                          ---";
+            
+        }//end EAST
+
+        if(room.isExit(WEST))
+        {
+            workRoomM[6][0]  = '-';
+            workRoomM[6][1]  = '-';
+            workRoomM[6][2]  = '-';
+
+            workRoomM[7][1]  = ' ';
+            workRoomM[8][1]  = ' ';
+            workRoomM[9][1]  = ' ';
+            workRoomM[10][1] = ' ';
+
+            workRoomM[11][0]  = '-';
+            workRoomM[11][1]  = '-';
+            workRoomM[11][2]  = '-';
+
+        }//end WEST
+
+
+        //Prepare for the up/down
+        // In the DF style:
+        // ' ' = No Stairs
+        // '<' = Up Stairs
+        // '>' = Down Stairs
+        // 'X' = Up/Down Stairs
+
+        char stairsChar = ' ';
+
+        if(room.isExit(UP) && room.isExit(DOWN))
+        {
+            stairsChar = 'X';
+        }
+        if(room.isExit(UP) && !room.isExit(DOWN))
+        {
+            stairsChar = '<';
+        }
+        if(!room.isExit(UP) && room.isExit(DOWN))
+        {
+            stairsChar = '>';
+        }
+
+
+        if(stairsChar != ' ')
+        {
+            //[7][12] - [10][19]
+            for(int y = 7; y <= 10; y++)
+            {
+                for(int x=12; x <= 19; x++)
+                {
+                    workRoomM[y][x] = stairsChar;
+                }
+            }
+
+
+        }
+
+
+    }//end prepareRoom
+
+    void Maze::displayRoom(Room &room)
+    {
+        using std::cout;
+        using std::endl;
+
+        blankRoom();
+        prepareRoom(room);
+
+        cout << endl << endl << "          " << room.getName() << endl << endl;
+
+        for(int y = 0; y < 18; y++)
+        {
+            cout << "          " << workRoomM[y] << endl;
+        }
+
+        cout << endl << endl << room.getDescription() << endl;
+
+
+        cout << endl << exits(room) << endl << endl << endl;;
+
+    } //end displayRoom()
+
+
+    std::string Maze::exits(Room &room)
+    {
+        std::stringstream exitString("");
+
+        exitString << "Exits: ";
+
+        if(room.isExit(NORTH)){exitString << " NORTH ";}
+        if(room.isExit(SOUTH)){exitString << " SOUTH ";}
+        if(room.isExit(EAST)) {exitString << " EAST "; }
+        if(room.isExit(WEST)) {exitString << " WEST "; }
+        if(room.isExit(UP))   {exitString << " UP ";   }
+        if(room.isExit(DOWN)) {exitString << " DOWN "; }
+
+        return exitString.str();
+    }
 
 
 } //end namespace game
