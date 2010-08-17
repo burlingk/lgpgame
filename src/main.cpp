@@ -51,16 +51,19 @@ int main(int argc, char** argv) {
 
     registerGenerators(theWorld);               //Register the object generators.
 
-    lgp::ObjectID player = theWorld.generateObject("player", "player");  //Create a player object
+    lgp::ObjectID playerID = theWorld.generateObject("player", "player");  //Create a player object
+    game::Player * player = dynamic_cast<game::Player *>(theWorld.getObjectById(playerID));
 
     game::Maze theMaze(&theWorld);              //Instantiate the maze class.
 
     theMaze.generateMaze();                     //Generate the maze.
 
+    player->setCarrier(theMaze.getStart());
+    
 
-    cout << "The Maze starts in room #" << theMaze.getStart() << endl;
-    cout << "TheMaze ends in room #" << theMaze.getFinish() << endl;
-    cout << "MaxObject: #"<< theWorld.maxObject() << endl;
+    theMaze.displayRoom(player->getCarrier());
+
+
 
 
     cout << "Exiting the program." << endl;

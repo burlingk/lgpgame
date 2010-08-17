@@ -493,6 +493,17 @@ namespace game {
 
     }//end prepareRoom
 
+
+    /// Display a room when given an Object ID for the room.
+    ///
+    /// This method converts the object ID to a room object, then calls
+    /// the full version of the method.
+    void Maze::displayRoom(lgp::ObjectID room)
+    {
+        Room * theRoom = dynamic_cast<Room *>(worldM->getObjectById(room));
+        displayRoom(*theRoom);
+    }
+
     void Maze::displayRoom(Room &room)
     {
         using std::cout;

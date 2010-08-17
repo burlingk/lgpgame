@@ -55,6 +55,8 @@ namespace game {
         void setRoom(int x, int y, int z, ObjectID room);
 
         void displayRoom(Room &room);
+        void displayRoom(lgp::ObjectID room);
+        
         std::string exits(Room &room);
 
         ObjectID getStart(void);
