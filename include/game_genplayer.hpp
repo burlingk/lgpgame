@@ -1,5 +1,5 @@
-/// \file game_maze.hpp
-/// \brief The description and definition of the game::Maze class.
+/// \file game_genplayer.hpp
+/// \brief The description and definition of the game::GenPlayer class.
 /// \author Kenneth. M. Burling Jr. (a.k.a. Emry)
 /// \version Alpha-0.001
 ///
@@ -24,69 +24,29 @@
 /// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 ///
-///  game::Maze is a class that will create and populate the maze that the user will run through.
-///  It is quite possible that at a future time, it may also control some other changing aspects
-///  of the maze throughout the course of the game.
+///  game::GenPlayer is the generator class for game::Player objects.
 ///
-/// File last updated 13:30 UTC on 14 Aug 2010
+/// File last updated 05:25 UTC on 17 Aug 2010
+#ifndef _GAME_GENPLAYER_HPP_
+#define	_GAME_GENPLAYER_HPP_
 
-#ifndef _GAME_MAZE_HPP_
-#define	_GAME_MAZE_HPP_
-
-#include <game_world.hpp>
-#include <game_room.hpp>
+#include <lgp_generator.hpp>
+#include <game_player.hpp>
 
 namespace game {
 
-    using lgp::ObjectID;
-    using lgp::Coordinate;
-
-    class Maze
+    class GenPlayer : public lgp::IGenerator
     {
     public:
-        Maze();
-        ~Maze();
+        GenPlayer();
+        ~GenPlayer();
 
-        Maze(World *world);
-        
-        void generateMaze(void);
-
-        ObjectID getRoom(int x, int y, int z);
-        void setRoom(int x, int y, int z, ObjectID room);
-
-        void displayRoom(Room &room);
-        std::string exits(Room &room);
-
-        ObjectID getStart(void);
-        ObjectID getFinish(void);
-
-        
+        lgp::Object * generateObject(std::string name);
         
     protected:
-        ObjectID originRoomM;               //The Object ID of the room at location 0,0,0
-        ObjectID startRoomM;                //The Object ID of the start of the maze.
-        ObjectID finishRoomM;               //The Object ID of the end of the maze.
-
-        World* worldM;                       //The world the Maze is in.
-
-
-        ObjectID mapM[11][11][11];
-
-        //Helper methods
-        Direction pickDirection(Room &room);
-        Direction reverseDirection(Direction direction);
-        Coordinate newLocation(Room &room, Direction direction);
-
-        void blankRoom(void);
-        void prepareRoom(Room &room);                 //Prepare the room for display.
-
-        std::string workRoomM[18];
-
-
-
     };
-
 
 } //end namespace game
 
-#endif	// end _GAME_MAZE_HPP_
+#endif	//end _GAME_GENPLAYER_HPP_
+

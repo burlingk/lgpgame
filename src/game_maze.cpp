@@ -42,6 +42,8 @@ namespace game {
 
     Maze::Maze()
     {
+        startRoomM  = -1;
+        finishRoomM = -1;
         for(int x=0; x<11;x++)
         {
             for(int y=0; y<11;y++)
@@ -58,7 +60,11 @@ namespace game {
     Maze::Maze(World *world)
     {
         worldM = world;
-                for(int x=0; x<11;x++)
+
+        startRoomM  = -1;
+        finishRoomM = -1;
+
+        for(int x=0; x<11;x++)
         {
             for(int y=0; y<11;y++)
             {
@@ -115,9 +121,6 @@ namespace game {
         lgp::Stack<Direction> candidates;
         lgp::Coordinate location = room.getLocation();
 
-        int x = location.x+5;
-        int y = location.y+5;
-        int z = location.z+5;
 
         //Select Initial Candidates (No door)
         if(!room.isExit(NORTH)){candidates.push(NORTH);}
@@ -134,7 +137,11 @@ namespace game {
         {
             Direction direction = candidates.pop();
             lgp::Coordinate testCoords = newLocation(room, direction);
-            if(testCoords.x > 10 || testCoords.x < 0 || testCoords.y > 10 || testCoords.y < 0 || testCoords.z > 10 || testCoords.z < 0)
+
+            //  I think this may have been my problem.  This code was using array specific variables, but all of the
+            //  code that deals with the array maps the world specific locations to the array location already.  I think
+            //  this may be why I was getting no rooms in the lower half of the world.
+            if(testCoords.x > 5 || testCoords.x < -5 || testCoords.y > 5 || testCoords.y < -5 || testCoords.z > 5 || testCoords.z < -10)
             {
                 //Discard value.  Out of range.
             }
@@ -242,6 +249,9 @@ namespace game {
     /// Will have to investigate a bit.
     void Maze::generateMaze(void)
     {
+        using std::endl;
+        using std::cout;
+
         lgp::Stack<Room*> roomStack;                                              //The stack that drives the "AI"
         originRoomM = worldM->generateObject("room", "The Center of the Maze");   //Create the origin room
 
@@ -287,6 +297,78 @@ namespace game {
             }
             
         } //end while (!complete)
+
+        //Pick Start Room:
+        //This will put it in the bottom, back, left quardrant.
+        if(getRoom(-5,-5,-5) != -1) { startRoomM = getRoom(-5,-5,-5);}
+        else
+        {
+            bool done = false;
+            for (int z = -5; z < 0; z++)
+            {
+                for(int y = -5; y < 0; y++)
+                {
+                    for(int x = -5; x < 0; x++)
+                    {
+                        if(getRoom(x,y,z) != -1)
+                        {
+                            if(!done)
+                            {
+                                startRoomM = getRoom(x,y,z);
+                                done = true;
+                            } //end if !done
+                        } //end if getroom != -1
+                    }//end x
+                } //end y
+            } //end z
+        } // end else for setting startRoomM
+
+        // Not Optimal, but it should work for now.
+        if(startRoomM == -1) 
+        {
+            cout << "Problem.  Could not place starting room." << endl;
+            cout << "Placing the start point at origin." << endl;
+            startRoomM = getRoom(0,0,0);
+        }
+
+        //Pick the End Point:
+        //This will put it in the forward, front right quadrant
+        if(getRoom(5,5,5) != -1){finishRoomM = getRoom(5,5,5);}
+        else
+        {
+            bool done = false;
+            for(int z = 5; z > 0; z--)
+            {
+                for(int y = 5; y > 0; y--)
+                {
+                    for(int x = 5; x > 0; x--)
+                    {
+                        if(!done)
+                        {
+                            finishRoomM = getRoom(x,y,z);
+                            done = true;
+                        } //end if done
+                    } //end x
+                } //end y
+            }//end z
+        }// end else for seting finishRoomM
+
+        // Not Optimal, but it MIGHT work for now.
+        if(finishRoomM == -1)
+        {
+            cout << "Problem.  Could not place finishing room." << endl;
+            cout << "Placing the end point at origin." << endl;
+            finishRoomM = getRoom(0,0,0);
+        }
+
+        if(startRoomM == finishRoomM)
+        {
+            cout << "Ah Bugger. The start and the finish are the same room." << std::endl;
+        }
+
+        
+
+
 
     }//end generateMaze()
 
@@ -450,5 +532,9 @@ namespace game {
         return exitString.str();
     }
 
+
+    ObjectID Maze::getStart(void){return startRoomM;};
+
+    ObjectID Maze::getFinish(void){return finishRoomM;};
 
 } //end namespace game

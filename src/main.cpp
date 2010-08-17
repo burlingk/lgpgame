@@ -35,6 +35,7 @@
 //lgpGame includes
 #include <lgpgame.hpp>
 #include <game_maze.hpp>
+#include <game_genplayer.hpp>
 
 void prepRoom(game::Room &room);
 
@@ -50,17 +51,16 @@ int main(int argc, char** argv) {
 
     registerGenerators(theWorld);               //Register the object generators.
 
-    lgp::ObjectID player = theWorld.generateObject("creature", "player");  //Create a player object
+    lgp::ObjectID player = theWorld.generateObject("player", "player");  //Create a player object
 
     game::Maze theMaze(&theWorld);              //Instantiate the maze class.
 
-    //theMaze.generateMaze();                     //Generate the maze.
+    theMaze.generateMaze();                     //Generate the maze.
 
-    game::Room myRoom("My Cool Room");
 
-    prepRoom(myRoom);
-
-    theMaze.displayRoom(myRoom);
+    cout << "The Maze starts in room #" << theMaze.getStart() << endl;
+    cout << "TheMaze ends in room #" << theMaze.getFinish() << endl;
+    cout << "MaxObject: #"<< theWorld.maxObject() << endl;
 
 
     cout << "Exiting the program." << endl;
@@ -73,16 +73,17 @@ void registerGenerators(lgp::World &world)
 {
     registerGenerator<lgp::GenCreature>(world, "creature");
     registerGenerator<game::GenRoom>(world, "room");
+    registerGenerator<game::GenPlayer>(world, "player");
     return;
 }
 
  
 void prepRoom(game::Room &room)
 {
-    room.setExit(game::NORTH, 1);
-    room.setExit(game::SOUTH, 1);
-    room.setExit(game::EAST,  1);
-    room.setExit(game::WEST,  1);
+    room.setExit(game::NORTH, -1);
+    room.setExit(game::SOUTH, -1);
+    room.setExit(game::EAST,  -1);
+    room.setExit(game::WEST,  -1);
     room.setExit(game::UP,    1);
-    room.setExit(game::DOWN,  1);
+    room.setExit(game::DOWN,  -1);
 }

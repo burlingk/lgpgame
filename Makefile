@@ -16,7 +16,7 @@ LIBS = -L./lib -L../libgamepieces/lib
 DEBUG = -ggdb
 
 
-all: game modules
+all: bin/game lib/libgame.a
 
 game: bin/game
 	
@@ -32,22 +32,34 @@ bin/game: src/main.cpp lib/libgame.a
 	g++ ${INCLUDES} ${LIBS} ${DEBUG} -o bin/game src/main.cpp -lgame -lgamepieces
 
 
-modules: obj/game_room.o obj/game_world.o obj/game_genroom.o obj/game_maze.o
 
-lib/libgame.a: modules
-	ar rcs lib/libgame.a obj/game_room.o obj/game_world.o obj/game_genroom.o obj/game_maze.o
+lib/libgame.a: obj/game_room.o obj/game_world.o obj/game_genroom.o obj/game_maze.o obj/game_player.o obj/game_genplayer.o
+	ar rcs lib/libgame.a obj/game_room.o obj/game_world.o obj/game_genroom.o obj/game_maze.o obj/game_player.o obj/game_genplayer.o
 
+#
+# Game Objects
+#
 obj/game_room.o: src/game_room.cpp include/game_room.hpp
 	g++ ${INCLUDES} ${DEBUG} -o obj/game_room.o -c src/game_room.cpp
 
 obj/game_world.o: src/game_world.cpp include/game_world.hpp
 	g++ ${INCLUDES} ${DEBUG} -o obj/game_world.o -c src/game_world.cpp
 
-obj/game_genroom.o: src/game_genroom.cpp include/game_genroom.hpp
-	g++ ${INCLUDES} ${DEBUG} -o obj/game_genroom.o -c src/game_genroom.cpp
-
 obj/game_maze.o: src/game_maze.cpp include/game_maze.hpp
 	g++ ${INCLUDES} ${DEBUG} -o obj/game_maze.o -c src/game_maze.cpp
 
+obj/game_player.o: src/game_player.cpp include/game_player.hpp
+	g++ ${INCLUDES} ${DEBUG} -o obj/game_player.o -c src/game_player.cpp
+
+
+#
+# Generators
+#
+obj/game_genroom.o: src/game_genroom.cpp include/game_genroom.hpp
+	g++ ${INCLUDES} ${DEBUG} -o obj/game_genroom.o -c src/game_genroom.cpp
+
+
+obj/game_genplayer.o: src/game_genplayer.cpp include/game_genplayer.hpp
+	g++ ${INCLUDES} ${DEBUG} -o obj/game_genplayer.o -c src/game_genplayer.cpp
 
 
