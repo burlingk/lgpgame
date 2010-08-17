@@ -44,6 +44,7 @@ namespace game {
     {
         startRoomM  = -1;
         finishRoomM = -1;
+        flashMessageM = "";
         for(int x=0; x<11;x++)
         {
             for(int y=0; y<11;y++)
@@ -63,6 +64,8 @@ namespace game {
 
         startRoomM  = -1;
         finishRoomM = -1;
+
+        flashMessageM = "";
 
         for(int x=0; x<11;x++)
         {
@@ -366,6 +369,8 @@ namespace game {
             cout << "Ah Bugger. The start and the finish are the same room." << std::endl;
         }
 
+        worldM->getObjectById(startRoomM)->setName("The First Room");
+        worldM->getObjectById(finishRoomM)->setName("The Final Room");
         
 
 
@@ -512,6 +517,7 @@ namespace game {
         blankRoom();
         prepareRoom(room);
 
+        cout << endl << endl;
         cout << endl << endl << "          " << room.getName() << endl << endl;
 
         for(int y = 0; y < 18; y++)
@@ -522,7 +528,8 @@ namespace game {
         cout << endl << endl << room.getDescription() << endl;
 
 
-        cout << endl << exits(room) << endl << endl << endl;;
+        cout << endl << exits(room) << endl << getFlashMessage() << endl << endl;;
+        cout << endl << endl << endl;
 
     } //end displayRoom()
 
@@ -547,5 +554,18 @@ namespace game {
     ObjectID Maze::getStart(void){return startRoomM;};
 
     ObjectID Maze::getFinish(void){return finishRoomM;};
+
+
+    std::string Maze::getFlashMessage(void)
+    {
+        std::string temp = flashMessageM;
+        setFlashMessage("");
+        return temp;
+    }
+
+    void Maze::setFlashMessage(std::string message)
+    {
+        flashMessageM = message;
+    }
 
 } //end namespace game

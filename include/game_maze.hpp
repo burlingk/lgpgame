@@ -62,6 +62,9 @@ namespace game {
         ObjectID getStart(void);
         ObjectID getFinish(void);
 
+        std::string getFlashMessage(void);
+        void setFlashMessage(std::string message);
+
         
         
     protected:
@@ -83,6 +86,7 @@ namespace game {
         void prepareRoom(Room &room);                 //Prepare the room for display.
 
         std::string workRoomM[18];
+        std::string flashMessageM;
 
 
 

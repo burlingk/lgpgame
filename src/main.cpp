@@ -31,13 +31,20 @@
 /// File last updated 13:30 UTC on 14 Aug 2010
 
 
+//System includes
+#include <algorithm>
+#include <string>
+
+//Boost includes
+#include<boost/tokenizer.hpp>
 
 //lgpGame includes
 #include <lgpgame.hpp>
 #include <game_maze.hpp>
 #include <game_genplayer.hpp>
 
-void prepRoom(game::Room &room);
+void processInput(game::Player &player, game::World &world, game::Maze &maze, bool &finished);
+game::Direction string_to_direction(std::string direction);
 
 int main(int argc, char** argv) {
 
@@ -63,6 +70,16 @@ int main(int argc, char** argv) {
 
     theMaze.displayRoom(player->getCarrier());
 
+    bool finished = false;
+
+    while(!finished)
+    {
+        theMaze.displayRoom(player->getCarrier());
+
+        processInput(*player, theWorld, theMaze, finished);
+
+
+    }
 
 
 
@@ -80,13 +97,96 @@ void registerGenerators(lgp::World &world)
     return;
 }
 
- 
-void prepRoom(game::Room &room)
+
+/// Collect input from the user and process it.
+void processInput(game::Player &player, game::World &world, game::Maze &maze, bool &finished)
 {
-    room.setExit(game::NORTH, -1);
-    room.setExit(game::SOUTH, -1);
-    room.setExit(game::EAST,  -1);
-    room.setExit(game::WEST,  -1);
-    room.setExit(game::UP,    1);
-    room.setExit(game::DOWN,  -1);
+    using std::cout;
+    using std::endl;
+
+    //The prompt:  They will see this a lot.
+    cout << "What would you like to do?" << endl <<"?: ";
+
+    //First we get the input.
+    std::string myInput;
+    std::getline(std::cin,myInput);
+
+    //Then we convert it to all caps.
+    std::transform(myInput.begin(), myInput.end(), myInput.begin(), ::toupper);
+
+    //Then we chop it up and push it onto a queue
+    boost::tokenizer<> tok(myInput);
+    lgp::Queue<std::string> wordList;
+
+    for(boost::tokenizer<>::iterator beg=tok.begin(); beg!=tok.end();++beg)
+    {
+        wordList.push(*beg);
+    }
+
+    //If there is no input, then we can't do anything.
+    if(wordList.size() == 0) 
+    {
+        maze.setFlashMessage("The was no input.");
+        return;
+    }
+
+    //If there is one word, then it will be a command.
+    if(wordList.size() == 1)
+    {
+        std::string command = wordList.pop();
+
+        if (command == "QUIT" || command == "EXIT")
+        {
+            finished = true;
+            return;
+        }
+
+        // Check to see if we have a direction.
+        // If we do, try to move.
+        game::Direction direction = string_to_direction(command);
+
+        if(direction != game::NODIRECTION)
+        {
+            game::Room * room = dynamic_cast<game::Room*>(world.getObjectById(player.getCarrier()));  //Get access to the room.
+
+            if(room->isExit(direction))
+            {
+                player.setCarrier(room->getExit(direction));
+                if(player.getCarrier() == maze.getFinish())
+                {
+                    maze.setFlashMessage("You Win!");
+                    return;
+                }
+                return;
+            }
+            else //command is a direction, but you can't go that way.
+            {
+                maze.setFlashMessage("You cannot go that direction");
+                return;
+            }
+        }
+
+        maze.setFlashMessage("The input was not understood.");
+        return;
+
+
+    }//end wordList.size() == 1
+    
+}//end processInput();
+
+
+/// Returns a direction value.
+///
+/// If the provided string is a direction, it returns the value.
+/// If it is not, the returns NODIRECTION.
+game::Direction string_to_direction(std::string direction)
+{
+    std::transform(direction.begin(), direction.end(), direction.begin(), ::toupper);
+    if(direction == "NORTH"){return game::NORTH;}
+    if(direction == "SOUTH"){return game::SOUTH;}
+    if(direction == "EAST") {return game::EAST; }
+    if(direction == "WEST") {return game::WEST; }
+    if(direction == "UP")   {return game::UP;   }
+    if(direction == "DOWN") {return game::DOWN; }
+    return game::NODIRECTION;
 }

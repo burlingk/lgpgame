@@ -16,6 +16,17 @@ LIBS = -L./lib -L../libgamepieces/lib
 DEBUG = -ggdb
 
 
+#
+# The following variables point to the programs used to compile
+# the project.  The commented out lines bellow are what I use to
+# cross compile on my Linux box so that I don't have to boot into windows
+# just to compile.  The uncommented lines are what I use to compile the Linux
+# version.  If you are on some other system, you will want to change these
+# lines to whatever works for you.
+#
+#CC  = i586-mingw32msvc-cc
+#CXX = i586-mingw32msvc-c++
+#AR  = i586-mingw32msvc-ar
 CC  = gcc
 CXX = g++
 AR  = ar
